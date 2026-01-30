@@ -232,8 +232,8 @@ class VulnScanX:
         """Scan for hidden directories and files"""
         vulnerabilities = []
         
-        try: base_url = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
-            
+        try: 
+            base_url = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
             for path in self.common_paths:
                 test_url = urljoin(base_url, path)
                 
