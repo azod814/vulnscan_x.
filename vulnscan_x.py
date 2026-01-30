@@ -228,42 +228,40 @@ class VulnScanX:
         
         return vulnerabilities
     
-    def scan_directories(self, url):
-        """Scan for hidden directories and files"""
-        vulnerabilities = []
-        
-        try: 
-            base_url = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
-            for path in self.common_paths:
-                test_url = urljoin(base_url, path)
-                
-                try:
-                    response = self.session.get(test_url, timeout=3)
-                    
-                    if response.status_code == 200:
-                        vulnerabilities.append({
-                            'type': 'Exposed Directory/File',
-                            'severity': 'MEDIUM',
-                            'url': test_url,
-                            'status_code': response.status_code,
-                            'description': f'Exposed directory or file found: {path}'
-                        })
-                    elif response.status_code == 403:
-                        vulnerabilities.append({
-                            'type': 'Restricted Directory',
-                            'severity': 'LOW',
-                            'url': test_url,
-                            'status_code': response.status_code,
-                            'description': f'Restricted directory found: {path}'
-                        })
-                        
-                except:
-                    continue
-                    
-        except Exception as e:
-            print(f"❌ Directory scan error: {e}")
-        
-        return vulnerabilities
+   def scan_directories(self, url):
+    """Scan for hidden directories and files"""
+    vulnerabilities = []
+
+    base_url = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
+
+    for path in self.common_paths:
+        test_url = urljoin(base_url, path)
+
+        try:
+            response = self.session.get(test_url, timeout=3)
+
+            if response.status_code == 200:
+                vulnerabilities.append({
+                    'type': 'Exposed Directory/File',
+                    'severity': 'MEDIUM',
+                    'url': test_url,
+                    'status_code': response.status_code,
+                    'description': f'Exposed directory or file found: {path}'
+                })
+            elif response.status_code == 403:
+                vulnerabilities.append({
+                    'type': 'Restricted Directory',
+                    'severity': 'LOW',
+                    'url': test_url,
+                    'status_code': response.status_code,
+                    'description': f'Restricted directory found: {path}'
+                })
+
+        except Exception:
+            continue
+
+    return vulnerabilities
+
     
     def scan_ports(self, url):
         """Scan for open ports on the target"""
